@@ -1,0 +1,11 @@
+parameters:
+  key_name: demo-key
+  image: cirros
+  flavor: m1.supertiny
+  private_net_id: 958b2681-dab7-4799-9350-f5f7e199be54
+  private_net_cidr: 10.100.1.0/24
+  private_net_gateway: 10.100.1.1
+  private_net_pool_start: 10.100.1.100
+  private_net_pool_end: 10.100.1.110
+
+
