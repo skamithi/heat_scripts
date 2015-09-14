@@ -1,7 +1,7 @@
 parameters:
   key_name: demo-key
   image: cirros
-  flavor: m1.supertiny
+  flavor: m2.supertiny
   private_net_name: demo123
   private_net_cidr: 10.100.1.0/24
   private_net_gateway: 10.100.1.1

@@ -27,7 +27,7 @@ parameters:
     description: Private network gateway address
   private_net_pool_start:
     type: string
-    description: Start of private network IP address allocation pool
+    description: Start of private network IP  address allocation pool
   private_net_pool_end:
     type: string
     description: End of private network IP address allocation pool
@@ -55,6 +55,7 @@ resources:
       image: { get_param: image }
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
+      availability_zone: "nova:server1"
       networks:
         - port: { get_resource: server1_port }
 
@@ -72,6 +73,8 @@ resources:
       image: { get_param: image }
       flavor: { get_param: flavor }
       key_name: { get_param: key_name }
+      availability_zone: "nova:server2"
+      networks:
       networks:
         - port: { get_resource: server2_port }
 
