@@ -1,0 +1,127 @@
+# Two instances on same tenant network but in different subnets
+# configure router to route between the two VMS
+# heat stack-create -e params_2node.yml -P private_net_name=demo1 -f server3.yaml demo1
+#
+heat_template_version: 2013-05-23
+
+description: >
+  HOT template to create a new neutron network plus a router to the public
+  network, and for deploying two servers into the new network. The template also
+  assigns floating IP addresses to each server so they are routable from the
+  public network.
+
+parameters:
+  key_name:
+    type: string
+    description: Name of keypair to assign to servers
+  image:
+    type: string
+    description: Name of image to use for servers
+  flavor:
+    type: string
+    description: Flavor to use for servers
+  private_net_name:
+    type: string
+    description: Name of private network to be created
+  private_net_cidr:
+    type: string
+    description: Private network address (CIDR notation)
+  private_net_gateway:
+    type: string
+    description: Private network gateway address
+  private_net_pool_start:
+    type: string
+    description: Start of private network IP  address allocation pool
+  private_net_pool_end:
+    type: string
+    description: End of private network IP address allocation pool
+
+resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: private_net_name }
+
+  private_subnet_one:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: private_net }
+      cidr:  10.200.200.0/24
+      gateway_ip: 10.200.200.1
+      allocation_pools:
+        - start: 10.200.200.10
+          end: 10.200.200.20
+
+  private_subnet_two:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: private_net }
+      cidr: 10.100.100.0/24
+      gateway_ip: 10.100.100.1
+      allocation_pools:
+        - start: 10.100.100.10
+          end: 10.100.100.20
+
+  router_01:
+    type: OS::Neutron::Router
+    properties:
+      admin_state_up: true
+      name: router_01
+
+  router_01_port1:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router_01 }
+      subnet_id: { get_resource: private_subnet_one }
+
+  router_01_port2:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router_01 }
+      subnet_id: { get_resource: private_subnet_two }
+  server1:
+    type: OS::Nova::Server
+    properties:
+      name: Server1
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      availability_zone: "nova:server1"
+      networks:
+        - port: { get_resource: server1_port }
+
+  server1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: private_subnet_one }
+
+  server2:
+    type: OS::Nova::Server
+    properties:
+      name: Server2
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      availability_zone: "nova:server2"
+      networks:
+      networks:
+        - port: { get_resource: server2_port }
+
+  server2_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: private_subnet_two }
+
+
+outputs:
+  server1_private_ip:
+    description: IP address of server1 in private network
+    value: { get_attr: [ server1, first_address ] }
+
+  server2_private_ip:
+    description: IP address of server2 in private network
+    value: { get_attr: [ server2, first_address ] }
