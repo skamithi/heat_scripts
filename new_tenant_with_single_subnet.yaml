@@ -116,7 +116,7 @@ resources:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network: { get_param: demo_ext_net_name }
-      port_id: { get_resource server1_port }
+      port_id: { get_resource: server1_port }
 
   server2:
     type: OS::Nova::Server
@@ -140,5 +140,5 @@ resources:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network: { get_param: demo_ext_net_name }
-      port_id: { get_resource server2_port }
+      port_id: { get_resource: server2_port }
 
