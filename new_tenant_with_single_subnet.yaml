@@ -1,0 +1,113 @@
+heat_template_version: 2015-04-30
+
+description: Create new Tenant and add a subnet to the tenant. Create  2 VMs and place the VMs in 2 unique compute nodes. Ensure each VM has a floating IP. User
+  that runs this MUST be in the openstack admin role
+
+parameters:
+  demo_project_name:
+    type: string
+    description: project name
+  demo_project_user:
+    type: string
+    description: Project user
+  demo_net_name:
+    type: string
+    description: Project network name
+  demo_net_cidr:
+    type: string
+    description: CIDR for demo network
+  demo_net_gateway:
+    type: string
+    description: gateway for demo network
+  demo_net_pool_start:
+    type: string
+    description: network pool start. typically .10 of whatever /24 is defined
+  demo_net_pool_end:
+    type: string
+    description: network pool end. typically .100 of whatever /24 is defined
+  demo_ext_net_name:
+    type: string
+    description: external net name. use neutron net-list to figure it out.
+resources:
+  demo_project:
+    type: OS::Keystone::Project
+    properties:
+      name: { get_param: demo_project_name }
+      domain: default
+      description: New Demo Project
+      enable: true
+  demo_user:
+    type: OS::Keystone
+    properties:
+      name: { get_param: demo_project_user }
+      domain: default
+      description: Test user
+      enabled: true
+      default_project: { get_resource: demo_project }
+  demo_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: demo_net_name }
+      tenant_id: { get_resource: demo_project }
+
+  demo_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_param: demo_net }
+      cidr: { get_param: demo_net_cidr }
+      gateway_ip: { get_param: demo_net_gateway }
+      allocation_pools:
+        - start: { get_param: demo_net_pool_start }
+          end: { get_param: demo_net_pool_end }
+
+  demo_router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: demo_ext_net_name }
+      tenant_id: { get_param: demo_project }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: demo_router }
+      subnet_id: { get_resource: demo_subnet }
+
+  demo_key:
+    type: OS::Nova::KeyPair
+    properties:
+      name: { get_param: demo_key_name }
+
+  server1:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: demo_server1_name }
+      image: { get_param: demo_image_name }
+      flavor: { get_param: demo_flavor_name }
+      key_name:  { get_param: demo_key_name }
+      availability_zone: "nova:server1"
+
+
+  server1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: demo_net }
+      fixed_ips:
+        - subnet_id: { get_resource: demo_subnet }
+
+  server2:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: demo_server2_name }
+      image: { get_param: demo_image_name }
+      flavor: { get_param: demo_flavor_name }
+      key_name:  { get_param: demo_key_name }
+      availability_zone: "nova:server2"
+
+
+  server2_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: demo_net }
+      fixed_ips:
+        - subnet_id: { get_resource: demo_subnet }
