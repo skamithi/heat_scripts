@@ -85,7 +85,7 @@ resources:
       allocation_pools:
         - start: { get_param: demo_net_pool_start }
           end: { get_param: demo_net_pool_end }
-
+      tenant_id: { get_resource: demo_project }
   demo_router:
     type: OS::Neutron::Router
     properties:
@@ -121,13 +121,13 @@ resources:
       network_id: { get_resource: demo_net }
       fixed_ips:
         - subnet_id: { get_resource: demo_subnet }
-
+      tenant_id: { get_resource: demo_project }
   server1_floating_ip:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network: { get_param: demo_ext_net_name }
       port_id: { get_resource: server1_port }
-
+      tenant_id: { get_resource: demo_project }
   server2:
     type: OS::Nova::Server
     properties:
@@ -145,10 +145,11 @@ resources:
       network_id: { get_resource: demo_net }
       fixed_ips:
         - subnet_id: { get_resource: demo_subnet }
+      tenant_id: { get_resource: demo_project }
 
   server2_floating_ip:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network: { get_param: demo_ext_net_name }
       port_id: { get_resource: server2_port }
-
+      tenant_id: { get_resource: demo_project }
