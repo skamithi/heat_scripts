@@ -7,6 +7,7 @@ do
 -e params_new_tenant.yaml \
 -P "demo_project_name=project${i};\
 demo_project_user=demouser${i};\
+demo_user_role=demorole${i};\
 demo_net_name=demonet${i};\
 demo_net_gateway=10.100.${i}.1;\
 demo_net_cidr=10.100.${i}.0/24;\

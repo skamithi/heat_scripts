@@ -7,6 +7,9 @@ parameters:
   demo_project_name:
     type: string
     description: project name
+  demo_user_role:
+    type: string
+    description: name of the user role.
   demo_project_user:
     type: string
     description: Project user
@@ -52,6 +55,10 @@ resources:
       name: { get_param: demo_project_name }
       domain: default
       description: New Demo Project
+  demo_role:
+    type: OS::Keystone::Role
+    properties:
+      name: { get_param: demo_user_role }
   demo_user:
     type: OS::Keystone::User
     properties:
@@ -60,6 +67,9 @@ resources:
       description: Test user
       default_project: { get_resource: demo_project }
       password: cumulus
+      roles:
+        - role: { get_resource: demo_role}
+          project: { get_resource: demo_project }
   demo_net:
     type: OS::Neutron::Net
     properties:
