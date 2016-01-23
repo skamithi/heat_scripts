@@ -1,7 +1,4 @@
 parameters:
-  demo_ext_net_name: public_subnet
+  demo_ext_net_name: ext-net
   demo_flavor_name: m2.supertiny
   demo_image_name: cirros
-
-
-
