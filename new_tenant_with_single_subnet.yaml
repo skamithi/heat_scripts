@@ -28,6 +28,23 @@ parameters:
   demo_ext_net_name:
     type: string
     description: external net name. use neutron net-list to figure it out.
+  demo_key_name:
+    type: string
+    description: ssh key required for server creation
+  demo_image_name:
+    type: string
+    description: image to use to for the server
+  demo_flavor_name:
+    type: string
+    description: openstack server flavor name use openstack flavor list to see options
+  demo_server1_name:
+    type: string
+    description: name of the first server created.
+  demo_server2_name:
+    type: string
+    description: name of the second server created
+
+
 resources:
   demo_project:
     type: OS::Keystone::Project
