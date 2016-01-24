@@ -1,0 +1,9 @@
+NAME="dummy0"
+DEVICE="dummy0"
+MACADDR=52:11:22:33:44:55
+ONBOOT=yes
+NETBOOT=no
+IPV6INIT=yes
+BOOTPROTO=none
+TYPE=Ethernet
+BRIDGE=vibr0

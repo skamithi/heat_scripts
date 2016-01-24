@@ -4,18 +4,6 @@ description: Create new Tenant and add a subnet to the tenant. Create  2 VMs and
   that runs this MUST be in the openstack admin role
 
 parameters:
-  demo_project_name:
-    type: string
-    description: project name
-  demo_user_role:
-    type: string
-    description: name of the user role.
-  demo_project_user:
-    type: string
-    description: Project user
-  demo_net_name:
-    type: string
-    description: Project network name
   demo_net_cidr:
     type: string
     description: CIDR for demo network
@@ -46,30 +34,10 @@ parameters:
   demo_server2_name:
     type: string
     description: name of the second server created
-
-
+  demo_net_name:
+    type: string
+    description: name of neutron network for tenant
 resources:
-  demo_project:
-    type: OS::Keystone::Project
-    properties:
-      name: { get_param: demo_project_name }
-      domain: default
-      description: New Demo Project
-  demo_role:
-    type: OS::Keystone::Role
-    properties:
-      name: { get_param: demo_user_role }
-  demo_user:
-    type: OS::Keystone::User
-    properties:
-      name: { get_param: demo_project_user }
-      domain: default
-      description: Test user
-      default_project: { get_resource: demo_project }
-      password: cumulus
-      roles:
-        - role: { get_resource: demo_role}
-          project: { get_resource: demo_project }
   demo_net:
     type: OS::Neutron::Net
     properties:
@@ -111,7 +79,6 @@ resources:
       availability_zone: "nova:server1"
       networks:
         - port: { get_resource: server1_port }
-
 
   server1_port:
     type: OS::Neutron::Port

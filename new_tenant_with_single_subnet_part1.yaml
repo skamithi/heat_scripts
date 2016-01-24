@@ -1,0 +1,42 @@
+heat_template_version: 2015-04-30
+
+description: Create new Tenant and add a subnet to the tenant. Create  2 VMs and place the VMs in 2 unique compute nodes. Ensure each VM has a floating IP. User
+  that runs this MUST be in the openstack admin role
+
+parameters:
+  demo_project_name:
+    type: string
+    description: project name
+  demo_user_role:
+    type: string
+    description: name of the user role.
+  demo_project_user:
+    type: string
+    description: Project user
+
+resources:
+  demo_project:
+    type: OS::Keystone::Project
+    properties:
+      name: { get_param: demo_project_name }
+      domain: default
+      description: New Demo Project
+  demo_role:
+    type: OS::Keystone::Role
+    properties:
+      name: { get_param: demo_user_role }
+  demo_user:
+    type: OS::Keystone::User
+    properties:
+      name: { get_param: demo_project_user }
+      domain: default
+      description: Test user
+      default_project: { get_resource: demo_project }
+      password: cumulus
+      roles:
+        - role: { get_resource: demo_role}
+          project: { get_resource: demo_project }
+        - role: 'heat_stack_owner'
+          project: { get_resource: demo_project }
+        - role: 'admin'
+          project: { get_resource: demo_project }

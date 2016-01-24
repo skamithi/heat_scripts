@@ -1,0 +1,9 @@
+unset OS_SERVICE_TOKEN
+export OS_USERNAME=demouser1
+#export OS_PASSWORD=280c93bdf1b94038
+export OS_PASSWORD=cumulus
+export PS1='[\u@\h \W(keystone_demo1)]\$ '
+export OS_AUTH_URL=http://192.168.100.1:5000/v2.0
+
+export OS_TENANT_NAME=demoproject1
+export OS_IDENTITY_API_VERSION=2.0
