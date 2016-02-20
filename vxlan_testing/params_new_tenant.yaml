@@ -5,7 +5,7 @@ parameters:
   demo_net_pool_start: '10.100.1.100'
   demo_net_pool_end: '10.100.1.200'
   demo_key: 'demo-key2'
-  demo_image_name: 'ostinato'
+  demo_image_name: 'cirros'
   demo_flavor_name: 'm1.medium'
   demo_server1_name: 'ost1'
   demo_server2_name: 'ost2'
