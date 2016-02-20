@@ -6,7 +6,7 @@ parameters:
   demo_net_pool_end: '10.100.1.200'
   demo_key: 'demo-key2'
   demo_image_name: 'ostinato'
-  demo_flavor_name: 'm1.small'
+  demo_flavor_name: 'm1.medium'
   demo_server1_name: 'ost1'
   demo_server2_name: 'ost2'
   avail_zone_server2: 'nova:server2'
