@@ -56,6 +56,15 @@ resources:
       allocation_pools:
         - start: { get_param: demo_net_pool_start }
           end: { get_param: demo_net_pool_end }
+
+  demo_router:
+    type: OS::Neutron::Router
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: demo_router }
+      subnet_id: { get_resource: demo_subnet }
   
   server1:
     type: OS::Nova::Server
