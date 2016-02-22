@@ -40,6 +40,9 @@ parameters:
   avail_zone_server2:
     type: string
     description: availability zone for second server vm
+  demo_ext_net_name:
+    type: string
+    description: demo ext name
 
 resources:
   demo_net:
@@ -59,6 +62,10 @@ resources:
 
   demo_router:
     type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: demo_ext_net_name }
+
 
   router_interface:
     type: OS::Neutron::RouterInterface
@@ -90,6 +97,8 @@ resources:
       flavor: { get_param: demo_flavor_name }
       key_name:  { get_param: demo_key }
       availability_zone: { get_param: avail_zone_server2 }
+      networks:
+        - port: { get_resource: server2_port }
 
   server2_port:
     type: OS::Neutron::Port

@@ -1,11 +1,12 @@
 parameters:
+  demo_ext_net_name: 'ext-net'
   demo_net_name: 'demo-net'
   demo_net_cidr: '10.100.1.0/24'
   demo_net_gateway: '10.100.1.1'
   demo_net_pool_start: '10.100.1.100'
   demo_net_pool_end: '10.100.1.200'
   demo_key: 'demo-key2'
-  demo_image_name: 'cirros'
+  demo_image_name:  'ost-dev' 
   demo_flavor_name: 'm1.medium'
   demo_server1_name: 'ost1'
   demo_server2_name: 'ost2'
