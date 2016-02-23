@@ -4,9 +4,24 @@ description: Create new Tenant and add a subnet to the tenant. Create  2 VMs and
   that runs this MUST be in the openstack admin role
 
 parameters:
+  demo_net_name2:
+    type: string
+    description: Project network name
   demo_net_name:
     type: string
     description: Project network name
+  demo_net_cidr2:
+    type: string
+    description: CIDR for demo network
+  demo_net_gateway2:
+    type: string
+    description: gateway for demo network
+  demo_net_pool_start2:
+    type: string
+    description: network pool start. typically .10 of whatever /24 is defined
+  demo_net_pool_end2:
+    type: string
+    description: network pool end. typically .100 of whatever /24 is defined
   demo_net_cidr:
     type: string
     description: CIDR for demo network
@@ -45,6 +60,21 @@ parameters:
     description: demo ext name
 
 resources:
+  demo_net2:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: demo_net_name2 }
+
+  demo_subnet2:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: demo_net2 }
+      cidr: { get_param: demo_net_cidr2 }
+      gateway_ip: { get_param: demo_net_gateway2 }
+      allocation_pools:
+        - start: { get_param: demo_net_pool_start2 }
+          end: { get_param: demo_net_pool_end2 }
+
   demo_net:
     type: OS::Neutron::Net
     properties:
@@ -72,7 +102,13 @@ resources:
     properties:
       router_id: { get_resource: demo_router }
       subnet_id: { get_resource: demo_subnet }
-  
+
+  router_interface2:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: demo_router }
+      subnet_id: { get_resource: demo_subnet2 }
+ 
   server1:
     type: OS::Nova::Server
     properties:
@@ -83,11 +119,17 @@ resources:
       availability_zone: { get_param: avail_zone_server1 }
       networks:
         - port: { get_resource: server1_port }
+        - port: { get_resource: server1_port2 }
 
-  server1_port:
+  server1_port: 
     type: OS::Neutron::Port
     properties:
       network_id: { get_resource: demo_net }
+
+  server1_port2:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: demo_net2 }
   
   server2:
     type: OS::Nova::Server
@@ -99,6 +141,12 @@ resources:
       availability_zone: { get_param: avail_zone_server2 }
       networks:
         - port: { get_resource: server2_port }
+        - port: { get_resource: server2_port2 }
+
+  server2_port2:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: demo_net2 } 
 
   server2_port:
     type: OS::Neutron::Port
